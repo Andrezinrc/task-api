@@ -33,4 +33,31 @@ exports.register = async (req, res) => {
   } catch (err) {
     res.status(500).json({ message: 'Erro ao registrar', error: err.message });
   }
-}
+};
+
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Busca o usuário
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'Credenciais inválidas' });
+    }
+
+    // Verifica a senha
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Credenciais inválidas' });
+    }
+
+    // Gera token e responde
+    const token = generateToken(user);
+    res.status(200).json({
+      message: 'Login realizado com sucesso',
+      token
+    });
+  } catch (err) {
+    res.status(500).json({ message: 'Erro no login', error: err.message });
+  }
+};
