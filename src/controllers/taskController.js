@@ -36,11 +36,11 @@ exports.updateTask = async (req, res) => {
         const task = await Task.findById(req.params.id);
 
         if (!task) return res.status(404).json({ message: 'Tarefa não encontrada' });
-
+        
         if (!task.owner.equals(req.user.id) && req.user.role !== 'admin') {
             return res.status(403).json({ message: 'Acesso negado' });
         }
-
+        
         Object.assign(task, req.body);
         await task.save();
 
@@ -61,7 +61,7 @@ exports.deleteTask = async (req, res) => {
             return res.status(403).json({ message: 'Acesso negado' });
         }
 
-        await task.remove();
+        await task.deleteOne();
         res.json({ message: 'Tarefa excluída com sucesso' });
     } catch (err) {
         res.status(500).json({ message: 'Erro ao excluir tarefa', error: err.message });

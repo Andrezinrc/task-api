@@ -22,7 +22,7 @@ const authMiddleware = async (req, res, next) => {
 
         // Anexa o usuário à requisição
         req.user = {
-            id: user._id,
+            id: user._id.toString(),
             role: user.role,
             name: user.name
         };
